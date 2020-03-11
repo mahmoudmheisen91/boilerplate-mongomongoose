@@ -2,6 +2,8 @@
 * 3. FCC Mongo & Mongoose Challenges
 * ==================================
 ***********************************************/
+// mongodb+srv://dbMahmoud:<password>@cluster0-rezfj.mongodb.net/test?retryWrites=true&w=majority
+//  dbMahmoud
 
 /** # MONGOOSE SETUP #
 /*  ================== */
@@ -13,8 +15,11 @@
 // as MONGO_URI. Connect to the database using the following syntax:
 //
 // mongoose.connect(<Your URI>, { useNewUrlParser: true, useUnifiedTopology: true }); 
+const mongoose = require('mongoose');
 
+process.env.MONGO_URI="mongodb+srv://dbMahmoud:asdf3456@cluster0-rezfj.mongodb.net/test?retryWrites=true&w=majority";
 
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true }); 
 
 /** # SCHEMAS and MODELS #
 /*  ====================== */
@@ -40,8 +45,16 @@
 // `default` values. See the [mongoose docs](http://mongoosejs.com/docs/guide.html).
 
 // <Your code here >
+let Schema = mongoose.Schema;
 
-var Person /* = <Your Model> */
+let PersonSchema  = new Schema({
+    name:  { type: String, required: [true, 'Enter name'] },
+    age: Number,
+    favoriteFoods: [String]
+}); 
+
+/* = <Your Model> */
+let Person = mongoose.model('Person', PersonSchema);
 
 // **Note**: Glitch is a real server, and in real servers interactions with
 // the db are placed in handler functions, to be called when some event happens
@@ -79,8 +92,11 @@ var Person /* = <Your Model> */
 // });
 
 var createAndSavePerson = function(done) {
+  let person = new Person({name: "M", age: 27, favoriteFoods: ["A", "B"]});
+  person.save(function(err, data) {
+    done(null, person);
+  });
   
-  done(null /*, data*/);
 
 };
 

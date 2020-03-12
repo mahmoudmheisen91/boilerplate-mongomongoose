@@ -94,10 +94,9 @@ let Person = mongoose.model('Person', PersonSchema);
 var createAndSavePerson = function(done) {
   let person = new Person({name: "M", age: 27, favoriteFoods: ["A", "B"]});
   person.save(function(err, data) {
-    done(null, person);
+    if (err) return done(err);
+    done(null, data);
   });
-  
-
 };
 
 /** 4) Create many People with `Model.create()` */
@@ -109,10 +108,12 @@ var createAndSavePerson = function(done) {
 // Create many people using `Model.create()`, using the function argument
 // 'arrayOfPeople'.
 
+let arrayOfPeople = [{name: "M", age: 27, favoriteFoods: ["A", "B"]},{name: "M", age: 27, favoriteFoods: ["A", "B"]}];
 var createManyPeople = function(arrayOfPeople, done) {
-    
-    done(null/*, data*/);
-    
+    Person.create(arrayOfPeople, function(err, data) {
+      if (err) return done(err);
+      done(null, data); 
+    });
 };
 
 /** # C[R]UD part II - READ #
@@ -127,9 +128,10 @@ var createManyPeople = function(arrayOfPeople, done) {
 // Use the function argument `personName` as search key.
 
 var findPeopleByName = function(personName, done) {
-  
-  done(null/*, data*/);
-
+  Person.find({name: personName}, function (err, data) {
+    if (err) return done(err);
+    done(null, data);
+  });
 };
 
 /** 6) Use `Model.findOne()` */
@@ -142,9 +144,10 @@ var findPeopleByName = function(personName, done) {
 // argument `food` as search key
 
 var findOneByFood = function(food, done) {
-
-  done(null/*, data*/);
-  
+  Person.findOne({favoriteFoods: food}, function (err, data) {
+    if (err) return done(err);
+    done(null, data);
+  });  
 };
 
 /** 7) Use `Model.findById()` */
@@ -157,9 +160,10 @@ var findOneByFood = function(food, done) {
 // Use the function argument 'personId' as search key.
 
 var findPersonById = function(personId, done) {
-  
-  done(null/*, data*/);
-  
+  Person.findById(personId, function (err, data) {
+    if (err) return done(err);
+    done(null, data);
+  });  
 };
 
 /** # CR[U]D part III - UPDATE # 
@@ -190,9 +194,15 @@ var findPersonById = function(personId, done) {
 var findEditThenSave = function(personId, done) {
   var foodToAdd = 'hamburger';
   
-  done(null/*, data*/);
-};
-
+  Person.findById(personId, function (err, data) {
+    data.favoriteFoods.push(foodToAdd);
+    data.save((e, r) => {   
+      if (e) return done(e);
+      done(null, r);
+      });
+  });  
+}; 
+  
 /** 9) New Update : Use `findOneAndUpdate()` */
 
 // Recent versions of `mongoose` have methods to simplify documents updating.
